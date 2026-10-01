@@ -2,7 +2,7 @@
 <html lang="mn">
 <head>
     <meta charset="UTF-8">
-    <title>Загварлаг Хоол Захиалгын Чатбот</title>
+    <title>Сагстай Хоол Захиалгын Чатбот</title>
     <style>
         * { box-sizing: border-box; }
         body { 
@@ -15,8 +15,8 @@
             margin: 0; 
         }
         .chat-container { 
-            width: 400px; 
-            height: 580px; 
+            width: 420px; 
+            height: 640px; 
             background: #ffffff; 
             border-radius: 16px; 
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
@@ -27,176 +27,274 @@
         .chat-header {
             background: #2d3748;
             color: white;
-            padding: 18px;
+            padding: 16px;
             text-align: center;
             font-weight: 600;
             font-size: 16px;
-            letter-spacing: 0.5px;
         }
         .chat-box { 
             flex: 1; 
-            padding: 20px; 
+            padding: 15px; 
             overflow-y: auto; 
             background: #f8fafc; 
             display: flex; 
             flex-direction: column; 
             gap: 12px; 
         }
-        /* Сонголтын товчлууруудын хэсэг */
-        .options-container {
+        .menu-container {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-top: 5px;
+            margin-top: 8px;
         }
-        .option-btn {
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background: #ffffff;
-            color: #667eea;
-            border: 2px solid #667eea;
-            padding: 10px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            text-align: left;
-            transition: all 0.2s;
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 13px;
         }
-        .option-btn:hover {
+        .menu-item button {
             background: #667eea;
             color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .menu-item button:hover {
+            background: #5a67d8;
+        }
+        .cart-summary {
+            background: #edf2f7;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+        .cart-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .cart-row button {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .cart-row button:hover {
+            background: #c53030;
+        }
+        .checkout-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .checkout-btn:hover {
+            background: #38a169;
         }
         .input-box { 
             display: flex; 
-            padding: 15px; 
+            padding: 12px; 
             background: #ffffff; 
             border-top: 1px solid #e2e8f0; 
         }
         .input-box input { 
             flex: 1; 
-            padding: 12px 15px; 
+            padding: 10px 14px; 
             border: 1px solid #cbd5e1; 
             border-radius: 30px; 
             outline: none; 
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-        .input-box input:focus {
-            border-color: #667eea;
+            font-size: 13px;
         }
         .input-box button { 
             background: #667eea; 
             color: white; 
             border: none; 
-            padding: 0 20px; 
-            margin-left: 8px; 
+            padding: 0 16px; 
+            margin-left: 6px; 
             border-radius: 30px; 
             cursor: pointer; 
             font-weight: 600;
-            transition: background 0.2s;
-        }
-        .input-box button:hover { 
-            background: #5a67d8; 
         }
         .message { 
-            padding: 12px 16px; 
-            border-radius: 12px; 
-            max-width: 85%; 
+            padding: 10px 14px; 
+            border-radius: 10px; 
+            max-width: 90%; 
             word-break: break-word; 
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.4;
         }
         .user-message { 
             background: #667eea; 
             color: white; 
             align-self: flex-end; 
-            border-bottom-right-radius: 2px;
         }
         .bot-message { 
             background: #e2e8f0; 
             color: #1a202c; 
             align-self: flex-start; 
-            border-bottom-left-radius: 2px;
         }
     </style>
 </head>
 <body>
 
     <div class="chat-container">
-        <div class="chat-header">✨ Ресторан Туслах AI</div>
+        <div class="chat-header">✨ Ресторан Захиалгын Систем</div>
         <div id="chat-box" class="chat-box">
             <div class="message bot-message">
-                Сайн байна уу? Манай рестораны захиалгын системд тавтай морилно уу. 🍔<br><br>Доорх цэснээс сонголтоо хийнэ үү:
-                <div class="options-container">
-                    <button class="option-btn" onclick="chooseFood('Бургер - 15,000₮')">🍔 Бургер - 15,000₮</button>
-                    <button class="option-btn" onclick="chooseFood('Пицца - 25,000₮')">🍕 Пицца - 25,000₮</button>
-                    <button class="option-btn" onclick="chooseFood('Кола - 4,000₮')">🥤 Кола - 4,000₮</button>
+                Сайн байна уу? Манай цэснээс сонголтоо хийнэ үү:
+                <div class="menu-container">
+                    <div class="menu-item">
+                        <span>🍔 Бургер - 15,000₮</span>
+                        <button onclick="addToCart('Бургер', 15000)">Нэмэх</button>
+                    </div>
+                    <div class="menu-item">
+                        <span>🍕 Пицца - 25,000₮</span>
+                        <button onclick="addToCart('Пицца', 25000)">Нэмэх</button>
+                    </div>
+                    <div class="menu-item">
+                        <span>🥤 Кола - 4,000₮</span>
+                        <button onclick="addToCart('Кола', 4000)">Нэмэх</button>
+                    </div>
+                </div>
+                <div id="cart-box" class="cart-summary" style="display:none;">
+                    <b>Таны сагс:</b>
+                    <div id="cart-items"></div>
+                    <button class="checkout-btn" onclick="proceedToCheckout()">Захиалга өгч дууслаа</button>
                 </div>
             </div>
         </div>
         <div class="input-box">
-            <input type="text" id="user-input" placeholder="Утас болон хаягаа бичнэ үү..." onkeypress="handleKeyPress(event)" disabled>
-            <button id="send-btn" onclick="sendMessage()" disabled>Игээх</button>
+            <input type="text" id="user-input" placeholder="Эхлээд хоолоо сонгоно уу..." onkeypress="handleKeyPress(event)" disabled>
+            <button id="send-btn" onclick="sendContact()" disabled>Игээх</button>
         </div>
     </div>
 
     <script>
-        let selectedFood = "";
-        let waitingForContact = false;
+        let cart = {};
+        let step = 'choosing';
 
-        // Хэрэглэгч товчлуураас хоол сонгох үед ажиллах функц
-        function chooseFood(foodName) {
-            selectedFood = foodName;
-            waitingForContact = true;
+        function addToCart(name, price) {
+            if (step !== 'choosing') return;
 
-            const chatBox = document.getElementById('chat-box');
+            if (!cart[name]) {
+                cart[name] = { price: price, count: 0 };
+            }
+            cart[name].count++;
+            updateCartDisplay();
+        }
+
+        function removeFromCart(name) {
+            if (step !== 'choosing') return;
+
+            if (cart[name]) {
+                cart[name].count--;
+                if (cart[name].count <= 0) {
+                    delete cart[name];
+                }
+            }
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartBox = document.getElementById('cart-box');
+            const cartItemsDiv = document.getElementById('cart-items');
             
-            // Хэрэглэгчийн сонголтыг chat-box руу нэмэх
-            chatBox.innerHTML += `<div class="message user-message">${foodName} сонголоо.</div>`;
+            if (Object.keys(cart).length === 0) {
+                cartBox.style.display = 'none';
+                return;
+            }
 
-            // Input болон товчлуурыг идэвхжүүлэх (Утас, хаяг бичихэд зориулж)
-            document.getElementById('user-input').disabled = false;
-            document.getElementById('send-btn').disabled = false;
-            document.getElementById('user-input').placeholder = "Утасны дугаар болон хүргэх хаягаа бичнэ үү...";
-            document.getElementById('user-input').focus();
+            cartBox.style.display = 'block';
+            let html = '';
+            let total = 0;
 
-            // Чатботын хариуг түр хүлээж байгаад гаргах
+            for (let item in cart) {
+                let subtotal = cart[item].price * cart[item].count;
+                total += subtotal;
+                html += `
+                    <div class="cart-row">
+                        <span>${item} x ${cart[item].count} (${subtotal.toLocaleString()}₮)</span>
+                        <button onclick="removeFromCart('${item}')">Хасах (-)</button>
+                    </div>
+                `;
+            }
+            html += `<div style="margin-top:8px; font-weight:bold; border-top: 1px solid #cbd5e1; padding-top: 5px;">Нийт: ${total.toLocaleString()}₮</div>`;
+            cartItemsDiv.innerHTML = html;
+        }
+
+        function proceedToCheckout() {
+            if (Object.keys(cart).length === 0) {
+                alert("Таны сагс хоосон байна!");
+                return;
+            }
+
+            step = 'waiting_contact';
+            const chatBox = document.getElementById('chat-box');
+
+            let orderSummary = "";
+            for (let item in cart) {
+                orderSummary += `${item} (${cart[item].count}), `;
+            }
+
+            chatBox.innerHTML += `<div class="message user-message">Захиалга өгч дууслаа. (${orderSummary})</div>`;
+            
             setTimeout(() => {
-                const botResponse = `Таны сонгосон <strong>${foodName}</strong> бүртгэгдлээ! 🛵 Одоо утасны дугаар болон хүргэх хаягаа бичээд илгээнэ үү.`;
+                const botResponse = `Захиалга баталгаажуулахад бэлэн боллоо! 🛵 Одоо утасны дугаар болон хүргэх хаягаа доорх хэсэгт бичиж илгээнэ үү.`;
                 chatBox.innerHTML += `<div class="message bot-message">${botResponse}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 500);
 
+            document.getElementById('user-input').disabled = false;
+            document.getElementById('send-btn').disabled = false;
+            document.getElementById('user-input').placeholder = "Утас болон хаягаа бичнэ үү...";
+            document.getElementById('user-input').focus();
+            
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // Хэрэглэгч утас, хаягаа бичиж илгээх үед ажиллах функц
-        function sendMessage() {
+        function sendContact() {
             const inputField = document.getElementById('user-input');
             const chatBox = document.getElementById('chat-box');
             const userText = inputField.value.trim();
             
-            if (!userText || !waitingForContact) return;
+            if (!userText || step !== 'waiting_contact') return;
 
-            // Хэрэглэгчийн бичсэн хаяг/утсыг гаргах
             chatBox.innerHTML += `<div class="message user-message">${userText}</div>`;
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
             setTimeout(() => {
-                const botResponse = `Баярлалаа! Таны захиалга (${selectedFood}) амжилттай баталгаажлаа. Бид таны бичсэн хаяг болон утас руу холбогдон хүргээд өгөх болно! 🚀`;
+                const botResponse = `Баярлалаа! Таны захиалга амжилттай баталгаажлаа. Бид таны бичсэн хаяг болон утас руу тун удахгүй холбогдох болно! 🎉`;
                 chatBox.innerHTML += `<div class="message bot-message">${botResponse}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
 
-                // Дахин захиалга хийх боломжтой болгох эсвэл хаах
-                waitingForContact = false;
+                document.getElementById('user-input').disabled = даруй;
                 document.getElementById('user-input').disabled = true;
                 document.getElementById('send-btn').disabled = true;
-                document.getElementById('user-input').placeholder = "Захиалга баталгаажсан.";
+                document.getElementById('user-input').placeholder = "Захиалга амжилттай илгээгдсэн.";
             }, 500);
         }
 
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
-                sendMessage();
+                sendContact();
             }
         }
     </script>
