@@ -16,7 +16,7 @@
         }
         .chat-container { 
             width: 400px; 
-            height: 550px; 
+            height: 580px; 
             background: #ffffff; 
             border-radius: 16px; 
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
@@ -41,6 +41,28 @@
             display: flex; 
             flex-direction: column; 
             gap: 12px; 
+        }
+        /* Сонголтын товчлууруудын хэсэг */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .option-btn {
+            background: #ffffff;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            background: #667eea;
+            color: white;
         }
         .input-box { 
             display: flex; 
@@ -77,7 +99,7 @@
         .message { 
             padding: 12px 16px; 
             border-radius: 12px; 
-            max-width: 80%; 
+            max-width: 85%; 
             word-break: break-word; 
             font-size: 14px;
             line-height: 1.5;
@@ -101,51 +123,74 @@
     <div class="chat-container">
         <div class="chat-header">✨ Ресторан Туслах AI</div>
         <div id="chat-box" class="chat-box">
-            <div class="message bot-message">Сайн байна уу? Манай рестораны захиалгын системд тавтай морилно уу. 🍔<br><br><strong>Манай цэс:</strong><br>1. Бургер - 15,000₮<br>2. Пицца - 25,000₮<br>3. Кола - 4,000₮<br><br>Та аль хоолыг захиалах вэ?</div>
+            <div class="message bot-message">
+                Сайн байна уу? Манай рестораны захиалгын системд тавтай морилно уу. 🍔<br><br>Доорх цэснээс сонголтоо хийнэ үү:
+                <div class="options-container">
+                    <button class="option-btn" onclick="chooseFood('Бургер - 15,000₮')">🍔 Бургер - 15,000₮</button>
+                    <button class="option-btn" onclick="chooseFood('Пицца - 25,000₮')">🍕 Пицца - 25,000₮</button>
+                    <button class="option-btn" onclick="chooseFood('Кола - 4,000₮')">🥤 Кола - 4,000₮</button>
+                </div>
+            </div>
         </div>
         <div class="input-box">
-            <input type="text" id="user-input" placeholder="Мессеж бичих..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">Игээх</button>
+            <input type="text" id="user-input" placeholder="Утас болон хаягаа бичнэ үү..." onkeypress="handleKeyPress(event)" disabled>
+            <button id="send-btn" onclick="sendMessage()" disabled>Игээх</button>
         </div>
     </div>
 
     <script>
+        let selectedFood = "";
         let waitingForContact = false;
 
+        // Хэрэглэгч товчлуураас хоол сонгох үед ажиллах функц
+        function chooseFood(foodName) {
+            selectedFood = foodName;
+            waitingForContact = true;
+
+            const chatBox = document.getElementById('chat-box');
+            
+            // Хэрэглэгчийн сонголтыг chat-box руу нэмэх
+            chatBox.innerHTML += `<div class="message user-message">${foodName} сонголоо.</div>`;
+
+            // Input болон товчлуурыг идэвхжүүлэх (Утас, хаяг бичихэд зориулж)
+            document.getElementById('user-input').disabled = false;
+            document.getElementById('send-btn').disabled = false;
+            document.getElementById('user-input').placeholder = "Утасны дугаар болон хүргэх хаягаа бичнэ үү...";
+            document.getElementById('user-input').focus();
+
+            // Чатботын хариуг түр хүлээж байгаад гаргах
+            setTimeout(() => {
+                const botResponse = `Таны сонгосон <strong>${foodName}</strong> бүртгэгдлээ! 🛵 Одоо утасны дугаар болон хүргэх хаягаа бичээд илгээнэ үү.`;
+                chatBox.innerHTML += `<div class="message bot-message">${botResponse}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 500);
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Хэрэглэгч утас, хаягаа бичиж илгээх үед ажиллах функц
         function sendMessage() {
             const inputField = document.getElementById('user-input');
             const chatBox = document.getElementById('chat-box');
             const userText = inputField.value.trim();
             
-            if (!userText) return;
+            if (!userText || !waitingForContact) return;
 
+            // Хэрэглэгчийн бичсэн хаяг/утсыг гаргах
             chatBox.innerHTML += `<div class="message user-message">${userText}</div>`;
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
             setTimeout(() => {
-                let botResponse = "Уучлаарай, би таны захиалгыг сайн ойлгосонгүй. Та цэснээс сонгоод бичнэ үү (Бургер, Пицца, Кола).";
-                const lowerText = userText.toLowerCase();
-
-                if (waitingForContact || /\d/.test(userText) || lowerText.includes("р хороо") || lowerText.includes("тоот") || lowerText.includes("гудамж")) {
-                    botResponse = "Баярлалаа! Таны захиалга амжилттай баталгаажлаа. Бид тун удахгүй тантай эргээд холбогдох болно! 🛵💨";
-                    waitingForContact = false;
-                } 
-                else if (lowerText.includes("бургер")) {
-                    waitingForContact = true;
-                    botResponse = "Таны Бургер захиалга бүртгэгдлээ! 🍔 Хүргэх хаяг болон утасны дугаараа бичнэ үү.";
-                } 
-                else if (lowerText.includes("пицца")) {
-                    waitingForContact = true;
-                    botResponse = "Таны Пицца захиалга бүртгэгдлээ! 🍕 Хүргэх хаяг болон утасны дугаараа бичнэ үү.";
-                } 
-                else if (lowerText.includes("кола")) {
-                    waitingForContact = true;
-                    botResponse = "Таны Кола захиалга бүртгэгдлээ! 🥤 Хүргэх хаяг болон утасны дугаараа бичнэ үү.";
-                }
-
+                const botResponse = `Баярлалаа! Таны захиалга (${selectedFood}) амжилттай баталгаажлаа. Бид таны бичсэн хаяг болон утас руу холбогдон хүргээд өгөх болно! 🚀`;
                 chatBox.innerHTML += `<div class="message bot-message">${botResponse}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
+
+                // Дахин захиалга хийх боломжтой болгох эсвэл хаах
+                waitingForContact = false;
+                document.getElementById('user-input').disabled = true;
+                document.getElementById('send-btn').disabled = true;
+                document.getElementById('user-input').placeholder = "Захиалга баталгаажсан.";
             }, 500);
         }
 
