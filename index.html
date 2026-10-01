@@ -2,27 +2,109 @@
 <html lang="mn">
 <head>
     <meta charset="UTF-8">
-    <title>Хоол Захиалгын Чатбот</title>
+    <title>Загварлаг Хоол Захиалгын Чатбот</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .chat-container { width: 380px; background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
-        .chat-box { flex: 1; height: 350px; padding: 15px; overflow-y: auto; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 10px; }
-        .input-box { display: flex; padding: 10px; background: #fff; }
-        .input-box input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
-        .input-box button { background: #28a745; color: white; border: none; padding: 8px 15px; margin-left: 5px; border-radius: 4px; cursor: pointer; }
-        .message { padding: 8px 12px; border-radius: 6px; max-width: 80%; word-break: break-word; }
-        .user-message { background: #007bff; color: white; align-self: flex-end; }
-        .bot-message { background: #e4e6eb; color: black; align-self: flex-start; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .chat-container { 
+            width: 400px; 
+            height: 550px; 
+            background: #ffffff; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+        .chat-header {
+            background: #2d3748;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+        .chat-box { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            background: #f8fafc; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
+        .input-box { 
+            display: flex; 
+            padding: 15px; 
+            background: #ffffff; 
+            border-top: 1px solid #e2e8f0; 
+        }
+        .input-box input { 
+            flex: 1; 
+            padding: 12px 15px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 30px; 
+            outline: none; 
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .input-box input:focus {
+            border-color: #667eea;
+        }
+        .input-box button { 
+            background: #667eea; 
+            color: white; 
+            border: none; 
+            padding: 0 20px; 
+            margin-left: 8px; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .input-box button:hover { 
+            background: #5a67d8; 
+        }
+        .message { 
+            padding: 12px 16px; 
+            border-radius: 12px; 
+            max-width: 80%; 
+            word-break: break-word; 
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .user-message { 
+            background: #667eea; 
+            color: white; 
+            align-self: flex-end; 
+            border-bottom-right-radius: 2px;
+        }
+        .bot-message { 
+            background: #e2e8f0; 
+            color: #1a202c; 
+            align-self: flex-start; 
+            border-bottom-left-radius: 2px;
+        }
     </style>
 </head>
 <body>
 
     <div class="chat-container">
+        <div class="chat-header">✨ Ресторан Туслах AI</div>
         <div id="chat-box" class="chat-box">
-            <div class="message bot-message">Сайн байна уу? Манай рестораны захиалгын системд тавтай морилно уу. 🍔<br><br>Манай цэс:<br>1. Бургер - 15,000₮<br>2. Пицца - 25,000₮<br>3. Кола - 4,000₮<br><br>Та аль хоолыг захиалах вэ?</div>
+            <div class="message bot-message">Сайн байна уу? Манай рестораны захиалгын системд тавтай морилно уу. 🍔<br><br><strong>Манай цэс:</strong><br>1. Бургер - 15,000₮<br>2. Пицца - 25,000₮<br>3. Кола - 4,000₮<br><br>Та аль хоолыг захиалах вэ?</div>
         </div>
         <div class="input-box">
-            <input type="text" id="user-input" placeholder="Энд бичнэ үү..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="user-input" placeholder="Мессеж бичих..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">Игээх</button>
         </div>
     </div>
@@ -37,12 +119,10 @@
             
             if (!userText) return;
 
-            // Хэрэглэгчийн бичсэн зүйлийг гаргах
             chatBox.innerHTML += `<div class="message user-message">${userText}</div>`;
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Хоолны захиалга боловсруулах логик
             setTimeout(() => {
                 let botResponse = "Уучлаарай, би таны захиалгыг сайн ойлгосонгүй. Та цэснээс сонгоод бичнэ үү (Бургер, Пицца, Кола).";
                 const lowerText = userText.toLowerCase();
