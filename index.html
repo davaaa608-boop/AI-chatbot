@@ -2,14 +2,14 @@
 <html lang="mn">
 <head>
     <meta charset="UTF-8">
-    <title>Миний AI Чатбот</title>
+    <title>Хоол Захиалгын Чатбот</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .chat-container { width: 350px; background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
-        .chat-box { flex: 1; height: 300px; padding: 15px; overflow-y: auto; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 10px; }
+        .chat-container { width: 380px; background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        .chat-box { flex: 1; height: 350px; padding: 15px; overflow-y: auto; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 10px; }
         .input-box { display: flex; padding: 10px; background: #fff; }
         .input-box input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
-        .input-box button { background: #007bff; color: white; border: none; padding: 8px 15px; margin-left: 5px; border-radius: 4px; cursor: pointer; }
+        .input-box button { background: #28a745; color: white; border: none; padding: 8px 15px; margin-left: 5px; border-radius: 4px; cursor: pointer; }
         .message { padding: 8px 12px; border-radius: 6px; max-width: 80%; word-break: break-word; }
         .user-message { background: #007bff; color: white; align-self: flex-end; }
         .bot-message { background: #e4e6eb; color: black; align-self: flex-start; }
@@ -19,15 +19,17 @@
 
     <div class="chat-container">
         <div id="chat-box" class="chat-box">
-            <div class="message bot-message">Сайн байна уу? Би таны чатбот байна.</div>
+            <div class="message bot-message">Сайн байна уу? Манай рестораны захиалгын системд тавтай морилно уу. 🍔<br><br>Манай цэс:<br>1. Бургер - 15,000₮<br>2. Пицца - 25,000₮<br>3. Кола - 4,000₮<br><br>Та аль хоолыг захиалах вэ?</div>
         </div>
         <div class="input-box">
-            <input type="text" id="user-input" placeholder="Мессеж бичих..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="user-input" placeholder="Энд бичнэ үү..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">Игээх</button>
         </div>
     </div>
 
     <script>
+        let waitingForContact = false;
+
         function sendMessage() {
             const inputField = document.getElementById('user-input');
             const chatBox = document.getElementById('chat-box');
@@ -40,14 +42,26 @@
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Чатботын автоматаар хариулах энгийн логик
+            // Хоолны захиалга боловсруулах логик
             setTimeout(() => {
-                let botResponse = "Сонирхолтой асуулт байна. Би одоогоор туршилтын горимд байна.";
-                
-                if (userText.includes("сайн уу") || userText.includes("Сайн байна уу")) {
-                    botResponse = "Сайн байна уу! Танд яаж туслах вэ?";
-                } else if (userText.includes("нэр")) {
-                    botResponse = "Намайг AI чатбот гэдэг.";
+                let botResponse = "Уучлаарай, би таны захиалгыг сайн ойлгосонгүй. Та цэснээс сонгоод бичнэ үү (Бургер, Пицца, Кола).";
+                const lowerText = userText.toLowerCase();
+
+                if (waitingForContact || /\d/.test(userText) || lowerText.includes("р хороо") || lowerText.includes("тоот") || lowerText.includes("гудамж")) {
+                    botResponse = "Баярлалаа! Таны захиалга амжилттай баталгаажлаа. Бид тун удахгүй тантай эргээд холбогдох болно! 🛵💨";
+                    waitingForContact = false;
+                } 
+                else if (lowerText.includes("бургер")) {
+                    waitingForContact = true;
+                    botResponse = "Таны Бургер захиалга бүртгэгдлээ! 🍔 Хүргэх хаяг болон утасны дугаараа бичнэ үү.";
+                } 
+                else if (lowerText.includes("пицца")) {
+                    waitingForContact = true;
+                    botResponse = "Таны Пицца захиалга бүртгэгдлээ! 🍕 Хүргэх хаяг болон утасны дугаараа бичнэ үү.";
+                } 
+                else if (lowerText.includes("кола")) {
+                    waitingForContact = true;
+                    botResponse = "Таны Кола захиалга бүртгэгдлээ! 🥤 Хүргэх хаяг болон утасны дугаараа бичнэ үү.";
                 }
 
                 chatBox.innerHTML += `<div class="message bot-message">${botResponse}</div>`;
